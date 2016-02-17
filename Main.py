@@ -46,6 +46,19 @@ def fetch_month_detail(url="http://www.tianqihoubao.com/lishi/beijing/month/2016
                         """<tr>\s*<td>\s*<a href=[^<]+</a>\s*</td>\s*<td>[^<]+</td>\s*<td>[^<]+</td>\s*<td>[^<]+</td>\s*</tr>""")
 
 
+def fetch_aqi_month_detail(url="http://www.tianqihoubao.com/aqi/beijing-201602.html"):
+    '''
+
+    :param url:
+    :return:
+    '''
+    content = fetch_html(url)
+
+    return ["".join(x) for x in _get_re_list(content,
+                                             """<tr>\s*(<td[^<]+</td>\s*){6}<!--\s*(<td[^<]+</td>\s*){3}\s*-->""")]
+
+
+# main task one
 def fetch_lishi_task():
     '''
     fetch lishi
@@ -57,16 +70,41 @@ def fetch_lishi_task():
         key_name = _get_last_key_name(url)
         content = fetch_html(BaseSite + url)
         sub_urls = fetch_url_list(content, """href='/lishi/%s/month/[0-9]{6}\.html'""" % key_name)
-        os.mkdir("lishi_" + key_name)
-        print "processing %s >>>>>>>>" % key_name
+        if not os.path.isdir("lishi_" + key_name):
+            os.mkdir("lishi_" + key_name)
+        print "[WH] processing %s >>>>>>>>" % key_name
         for sub_url in sub_urls:
             detail_list = fetch_month_detail(BaseSite + sub_url)
             sub_key_name = _get_last_key_name(sub_url)
-            print "writing %s(%d)" % (sub_key_name, len(detail_list))
+            print "[WH] writing %s(%d)" % (sub_key_name, len(detail_list))
             open("lishi_" + key_name + "/" + sub_key_name, "w").write((("-" * 30) + "\n\n").join(detail_list))
-            print "<" * 15
-        print "<" * 30
+            print "[WH]", "<" * 15
+        print "[WH] ", "<" * 30
+
+
+# main task two
+def fetch_aqi_task():
+    '''
+
+    :return:
+    '''
+    content = fetch_html(BaseSite + "aqi/")
+    url_list = fetch_url_list(content, """href="/aqi/[a-zA-Z0-9]{3,30}\.html\"""")
+    for url in url_list:
+        key_name = _get_last_key_name(url)
+        content = fetch_html(BaseSite + url)
+        sub_urls = fetch_url_list(content, """href='/aqi/%s-[0-9]{6}\.html'""" % key_name)
+        if not os.path.isdir("aqi_" + key_name):
+            os.mkdir("aqi_" + key_name)
+        print "[AQI] processing %s >>>>>>>>" % key_name
+        for sub_url in sub_urls:
+            detail_list = fetch_aqi_month_detail(BaseSite + sub_url)
+            sub_key_name = _get_last_key_name(sub_url)
+            print "[AQI] writing %s(%d)" % (sub_key_name, len(detail_list))
+            open("aqi_" + key_name + "/" + sub_key_name, "w").write((("-" * 30) + "\n\n").join(detail_list))
+            print "[AQI]", "<" * 15
+        print "[AQI]", "<" * 30
 
 
 if __name__ == "__main__":
-    fetch_lishi_task()
+    fetch_aqi_task()
