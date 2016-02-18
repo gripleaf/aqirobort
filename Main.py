@@ -77,7 +77,8 @@ def fetch_lishi_task():
             detail_list = fetch_month_detail(BaseSite + sub_url)
             sub_key_name = _get_last_key_name(sub_url)
             print "[WH] writing %s(%d)" % (sub_key_name, len(detail_list))
-            open("lishi_" + key_name + "/" + sub_key_name, "w").write((("-" * 30) + "\n\n").join(detail_list))
+            with open("lishi_" + key_name + "/" + sub_key_name, "w") as ft:
+                ft.write((("-" * 30) + "\n\n").join(detail_list))
             print "[WH]", "<" * 15
         print "[WH] ", "<" * 30
 
@@ -101,7 +102,8 @@ def fetch_aqi_task():
             detail_list = fetch_aqi_month_detail(BaseSite + sub_url)
             sub_key_name = _get_last_key_name(sub_url)
             print "[AQI] writing %s(%d)" % (sub_key_name, len(detail_list))
-            open("aqi_" + key_name + "/" + sub_key_name, "w").write((("-" * 30) + "\n\n").join(detail_list))
+            with open("aqi_" + key_name + "/" + sub_key_name, "w") as ft:
+                ft.write((("-" * 30) + "\n\n").join(detail_list))
             print "[AQI]", "<" * 15
         print "[AQI]", "<" * 30
 
