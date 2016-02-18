@@ -66,13 +66,15 @@ def fetch_lishi_task():
     '''
     content = fetch_html(BaseSite + "lishi/")
     url_list = fetch_url_list(content, """href="/lishi/[a-zA-Z0-9]{3,30}\.html\"""")
+    total = len(url_list)
+    cnt = 0
     for url in url_list:
         key_name = _get_last_key_name(url)
         content = fetch_html(BaseSite + url)
         sub_urls = fetch_url_list(content, """href='/lishi/%s/month/[0-9]{6}\.html'""" % key_name)
         if not os.path.isdir("lishi_" + key_name):
             os.mkdir("lishi_" + key_name)
-        print "[WH] processing %s >>>>>>>>" % key_name
+        print "[WH] processing %s >>>>>>>>( %d / %d )" % (key_name, cnt, total)
         for sub_url in sub_urls:
             detail_list = fetch_month_detail(BaseSite + sub_url)
             sub_key_name = _get_last_key_name(sub_url)
@@ -81,6 +83,7 @@ def fetch_lishi_task():
                 ft.write((("-" * 30) + "\n\n").join(detail_list))
             print "[WH]", "<" * 15
         print "[WH] ", "<" * 30
+        cnt += 1
 
 
 # main task two
@@ -91,13 +94,15 @@ def fetch_aqi_task():
     '''
     content = fetch_html(BaseSite + "aqi/")
     url_list = fetch_url_list(content, """href="/aqi/[a-zA-Z0-9]{3,30}\.html\"""")
+    total = len(url_list)
+    cnt = 0
     for url in url_list:
         key_name = _get_last_key_name(url)
         content = fetch_html(BaseSite + url)
         sub_urls = fetch_url_list(content, """href='/aqi/%s-[0-9]{6}\.html'""" % key_name)
         if not os.path.isdir("aqi_" + key_name):
             os.mkdir("aqi_" + key_name)
-        print "[AQI] processing %s >>>>>>>>" % key_name
+        print "[AQI] processing %s >>>>>>>>( %d / %d )" % (key_name, cnt, total)
         for sub_url in sub_urls:
             detail_list = fetch_aqi_month_detail(BaseSite + sub_url)
             sub_key_name = _get_last_key_name(sub_url)
@@ -106,7 +111,8 @@ def fetch_aqi_task():
                 ft.write((("-" * 30) + "\n\n").join(detail_list))
             print "[AQI]", "<" * 15
         print "[AQI]", "<" * 30
+        cnt += 1
 
 
 if __name__ == "__main__":
-    print fetch_aqi_month_detail("http://www.tianqihoubao.com/aqi/beijing-201311.html")
+    fetch_aqi_task()
