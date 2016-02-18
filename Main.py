@@ -54,8 +54,8 @@ def fetch_aqi_month_detail(url="http://www.tianqihoubao.com/aqi/beijing-201602.h
     '''
     content = fetch_html(url)
 
-    return ["".join(x) for x in _get_re_list(content,
-                                             """<tr>\s*(<td[^<]+</td>\s*){6}<!--\s*(<td[^<]+</td>\s*){3}\s*-->""")]
+    return _get_re_list(content,
+                        """<tr>\s*<td[^<]+</td>\s*<td[^<]+</td>\s*<td[^<]+</td>\s*<td[^<]+</td>\s*<td[^<]+</td>\s*<td[^<]+</td>\s*<!--\s*<td[^<]+</td>\s*<td[^<]+</td>\s*<td[^<]+</td>\s*\s*-->""")
 
 
 # main task one
@@ -109,4 +109,4 @@ def fetch_aqi_task():
 
 
 if __name__ == "__main__":
-    fetch_aqi_task()
+    print fetch_aqi_month_detail("http://www.tianqihoubao.com/aqi/beijing-201311.html")
